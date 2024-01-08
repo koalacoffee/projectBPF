@@ -1,0 +1,14 @@
+[
+    {
+        "image":"../assets/img/data/chili.jpg",
+        "name":"chilli"
+    },
+    {
+        "image":"../assets/img/data/grapes.jpg",
+        "name":"grapes"
+    },
+    {
+        "image":"../assets/img/data/apple.jpg",
+        "name":"apple"
+    }
+]

@@ -1,0 +1,8 @@
+.imgcard{
+    width:200px;
+    height:260px;
+    border: 2px solid #ccc; /* Add your desired border style */
+    border-radius: 8px;    /* Add border-radius for a rounded border */
+    margin-bottom: 10px;
+    margin-top:10px;
+  }
