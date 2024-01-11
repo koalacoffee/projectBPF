@@ -9,9 +9,7 @@ class Soal_model extends CI_Model{
         $this->load->helper('url');
     }
     public function get(){
-        $this->db->select('s.id as soal_id, s.*, j.*');
-        $this->db->from('soal s');
-        $this->db->join('jawaban j', 's.id = j.soal', 'left');
+        $this->db->from($this->table);
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -27,10 +25,8 @@ class Soal_model extends CI_Model{
         return $data;
     }
     public function getById($id){
-        $this->db->select('s.*,j.*');
-        $this->db->from('soal s');
-        $this->db->join('jawaban j','s.id = j.soal');
-        $this->db->where('s.id',$id);
+        $this->db->from($this->table);
+        $this->db->where($this->id,$id);
         $query = $this->db->get();
         return $query->row_array();
     }

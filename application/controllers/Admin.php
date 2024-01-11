@@ -8,7 +8,6 @@ class Admin extends CI_Controller{
         $this->load->model('Quiz_model');
         $this->load->model('Soal_model');
         $this->load->model('User_model');
-        $this->load->model('Jawaban_model');
     }
     
     private function check_role(){
@@ -42,7 +41,7 @@ class Admin extends CI_Controller{
         $data['user'] = $this->db->get_where('user',['email'=> $this->session->userdata('email')])->row_array();
         $data['error']=false;
         $this->load->view("layout/header",$data);
-        $this->load->view("admin/vw_addsoal.php",$data);
+        $this->load->view("admin/vw_addsoal",$data);
         $this->load->view("layout/footer");
     }
     public function tambahQuiz(){
@@ -89,47 +88,29 @@ class Admin extends CI_Controller{
 
             if ($this->form_validation->run() == false) {
                  // Set general error message for flashdata
-                $this->session->set_flashdata('error_message', 'Validasi Gagal! Pastikan Semua Kolom Telah Terisi!');
+                $this->session->set_flashdata('tambah_error_message', 'Validasi Gagal! Pastikan Semua Kolom Telah Terisi!');
                 // Redirect back to the form view
                 $this->load->view("layout/header",$data);
                 $this->load->view("admin/vw_addsoal",$data);
                 $this->load->view("layout/footer");
             } 
-            
             else {
                 // Prepare data for 'soal' table
                 $soalData = [
                     'quiz' => $id,
                     'nama' => $this->input->post('kartuinduk'),
-                    'gambar' => $this->uploadImage($id,'kartuIndukImg', './assets/img/kartu/induk/')
-                ];
-        
-                // Insert into 'soal' table
-                $soalId = $this->Soal_model->insert($soalData);
-
-                    // Increment the 'atribut soal' in the 'quiz' table
-                $currentAtributSoal = $this->Quiz_model->getById($id)['soal'];
-                $newAtributSoal = $currentAtributSoal + 1;
-
-                // Update the 'quiz' table with the incremented value
-                $updateResult = $this->Quiz_model->updateSoalCount($id, $newAtributSoal);
-                // Prepare data for 'jawaban' table
-                $jawabanData = [
-                    'soal' => $soalId,
+                    'gambar' => $this->uploadImage($id,'kartuIndukImg', './assets/img/kartu/induk/'),
                     'nama_fisika' => $this->input->post('kartufisika'),
                     'fisika' => $this->uploadImage($id,'kartuFisikaImg', './assets/img/kartu/fisika/'),
                     'nama_kimia' => $this->input->post('kartukimia'),
                     'kimia' => $this->uploadImage($id,'kartuKimiaImg', './assets/img/kartu/kimia/')
                 ];
-                // Insert into 'jawaban' table
-                $this->Jawaban_model->insert($jawabanData);
-                // Set flash message and redirect
+                $this->Soal_model->insert($soalData);
                 $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Soal Berhasil Ditambah!</div>');
                 redirect('Admin/soal/' .$id);
             }
     }
-    
-    public function editSoal($id){
+    public function editSoal($id,$quizid){
         $data['judul'] = "Tambah Soal";
         $data['player'] = $this->User_model->get();
         $data['soal'] = $this->Soal_model->get();
@@ -149,34 +130,31 @@ class Admin extends CI_Controller{
 
             if ($this->form_validation->run() == false) {
                  // Set general error message for flashdata
-                $this->session->set_flashdata('error_message', 'Validasi Gagal! Pastikan Semua Kolom Telah Terisi!');
+                $this->session->set_flashdata('edit_error_message', 'Validasi Gagal! Pastikan Semua Kolom Telah Terisi!');
                 // Redirect back to the form view
                 $this->load->view("layout/header",$data);
-                $this->load->view("admin/vw_addsoal",$data);
+                $this->load->view("admin/vw_editsoal/".$id,$data);
                 $this->load->view("layout/footer");
             } 
             else {
+                $oldIndukImage = $this->Soal_model->getById($id)['gambar']; // Retrieve old induk image filename
+                $oldFisikaImage = $this->Soal_model->getById($id)['fisika']; // Retrieve old fisika image filename
+                $oldKimiaImage = $this->Soal_model->getById($id)['kimia']; // Retrieve old kimia image filename
                 // Prepare data for 'soal' table
                 $soalData = [
-                    'quiz' => $id,
                     'nama' => $this->input->post('kartuinduk'),
-                    'gambar' => $this->uploadImage($id,'kartuIndukImg', './assets/img/kartu/induk/')
-                ]; 
-                $this->Soal_model->update(['id'=>$id],$soalData);
-                $jawabanData = [
-                    'soal' => $soalId,
+                    'gambar' => $this->updateImage('gambar', './assets/img/kartu/induk/', $oldIndukImage),
                     'nama_fisika' => $this->input->post('kartufisika'),
-                    'fisika' => $this->uploadImage($id,'kartuFisikaImg', './assets/img/kartu/fisika/'),
+                    'fisika' => $this->updateImage('fisika', './assets/img/kartu/fisika/', $oldFisikaImage),
                     'nama_kimia' => $this->input->post('kartukimia'),
-                    'kimia' => $this->uploadImage($id,'kartuKimiaImg', './assets/img/kartu/kimia/')
+                    'kimia' => $this->updateImage('kimia', './assets/img/kartu/kimia/', $oldKimiaImage)
                 ];
-                // Insert into 'jawaban' table
-                $this->Jawaban_model->update(['id' => $id],$jawabanData);
-                // Set flash message and redirect
+                $this->Soal_model->update(['id' => $id], $soalData);
                 $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Soal Berhasil Diedit!</div>');
-                redirect('Admin/soal/' .$id);
+                redirect('Admin/soal/' .$quizid);
             }
     }
+
 // Function to handle image upload
 private function uploadImage($id,$inputName, $directory) {
     log_message('debug', 'Directory received: ' . $directory);  // Log the directory
@@ -194,6 +172,27 @@ private function uploadImage($id,$inputName, $directory) {
         $this->session->set_flashdata('error_message', $upload_errors);
         redirect('Admin/soal/' . $id);
         return null; // Or handle the error accordingly
+    }
+}
+private function updateImage($inputName, $directory, $oldImage = null) {
+    $config['upload_path'] = $directory;
+    $config['allowed_types'] = 'gif|jpg|png|jpeg';
+    $config['max_size'] = '2048';
+    
+    $this->load->library('upload', $config);
+
+    if ($this->upload->do_upload($inputName)) {
+        if ($oldImage && file_exists(FCPATH . $directory . $oldImage)) {
+            unlink(FCPATH . $directory . $oldImage); // Delete old image if exists
+        }
+        $data = $this->upload->data();
+        return $data['file_name'];
+    } elseif (!$this->upload->do_upload($inputName) && $oldImage) {
+        return $oldImage; // Return old image if no new image uploaded
+    } else {
+        $upload_errors = $this->upload->display_errors();
+        $this->session->set_flashdata('error_message', $upload_errors);
+        return null;
     }
 }
     public function editQuiz(){
@@ -235,38 +234,26 @@ private function uploadImage($id,$inputName, $directory) {
     }
 
     public function hapusSoal($quizId, $soalId) {
-        // First, delete related answers for the soal
-        $this->Jawaban_model->deleteBySoalId($soalId);
-    
-        // Then, delete the soal itself
         $this->Soal_model->delete($soalId);
-    
-        // Decrement the soal count in the quiz table
-        $this->decrementSoalCount($quizId);
-    
-        // Check for errors and set flash messages accordingly
         $error = $this->db->error();
         if ($error['code'] != 0) {
             $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert"><i class="bi bi-info-circle-fill"></i>  Soal tidak dapat dihapus!</div>');
         } else {
             $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert"><i class="bi bi-check-circle"></i>  Data Soal Berhasil Dihapus!</div>');
         }
-    
-        // Redirect back to the soal list for the specific quiz
         redirect('Admin/soal/' . $quizId);
     }
-    
-    private function decrementSoalCount($quizId) {
-        // Assuming you have a model or method to fetch the current soal count for a quiz
-        $currentCount = $this->Quiz_model->getSoalCount($quizId);
-    
-        // If the current count is greater than 0, decrement it by 1
-        if ($currentCount > 0) {
-            $newCount = $currentCount - 1;
-    
-            // Update the soal count in the quiz table
-            $this->Quiz_model->updateSoalCount($quizId, $newCount);
-        }
+
+    public function vwEdit($id,$quiz){
+        $this->check_role();
+        $data['judul'] = "Tambah Soal";
+        $data['player'] = $this->User_model->get();
+        $data['soal'] = $this->Soal_model->getById($id);
+        $data['quiz_id']=$quiz;
+        $data['user'] = $this->db->get_where('user',['email'=> $this->session->userdata('email')])->row_array();
+        $data['error']=false;
+        $this->load->view("layout/header",$data);
+        $this->load->view("admin/vw_editsoal",$data);
+        $this->load->view("layout/footer");
     }
-    
 }

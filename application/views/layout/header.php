@@ -33,6 +33,7 @@
   <!-- Template Main CSS File -->
   <link href="<?= base_url('assets/') ?>css/style.css" rel="stylesheet">
   <link href="<?= base_url('assets/') ?>css/custom.css" rel="stylesheet">
+  <script src="<?= base_url('assets/') ?>js/script.js" defer></script>
 
   <!-- Icon Lists -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
@@ -82,8 +83,9 @@
             <i class="bi bi-search"></i>
           </a>
         </li><!-- End Search Icon-->
-
+        <span class="badge rounded-pill bg-info text-dark">Level <?=$user['level'];?>  </span>  | 
         <li class="nav-item pe-3">
+        
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="<?= base_url('Profil/') ?>">
             <img src="<?= base_url("assets/img/profile/").$user['gambar'];?>" alt="Profile" class="rounded-circle mr-2">
             <span class="d-none d-md-block"><?=  $user['nama'];?> </span>
@@ -99,18 +101,6 @@
       <li class="nav-heading">Menu</li>
       <?php
       if ($user['role'] == 'admin'){ ?>
-        <li class="nav-item">
-        <a class="nav-link collapsed" href="<?= site_url('Mahasiswa/') ?>">
-          <i class="fa fa-group"></i>
-          <span>Mahasiswa</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="<?= site_url('Prodi/') ?>">
-          <i class="fa fa-group"></i>
-          <span>Prodi</span>
-        </a>
-      </li>
       <li class="nav-item">
         <a class="nav-link collapsed" href="<?= base_url('Admin/') ?>">
           <i class="ri-admin-line"></i>

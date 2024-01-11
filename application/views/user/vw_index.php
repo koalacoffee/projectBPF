@@ -48,7 +48,7 @@
                          <div class="card info-card sales-card">
 
                              <div class="card-body">
-                                 <h5 class="card-title">Total Quiz</span></h5>
+                                 <h5 class="card-title">Total Streak</span></h5>
 
                                  <div class="d-flex align-items-center">
                                      <div
