@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Game Perubahan Wujud</title>
     <style>
-    /* CSS untuk desain kartu */
     body {
         font-family: Arial, sans-serif;
         background-color: #f4f4f4;
@@ -13,7 +12,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100vh;
+        height: 95vh;
     }
 
     #gameArea {
@@ -25,6 +24,7 @@
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         position: relative;
+        height: 90vh;
         width: 200vh;
     }
 
@@ -37,25 +37,18 @@
     #skor-box,
     #waktu-box {
         background-color: #c0c0c0;
-        /* Warna abu-abu silver */
         padding: 10px 15px;
-        /* Padding untuk memberikan ruang di dalam kotak */
         border-radius: 6px;
-        /* Membuat sudut kotak sedikit melengkung */
         margin-bottom: 10px;
-        /* Memberikan sedikit jarak antara kedua kotak */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        /* Shadow untuk efek mendalam */
     }
 
     #skor-box {
         font-size: 24px;
-        /* Ukuran font skor */
     }
 
     #waktu-box {
         font-size: 24px;
-        /* Ukuran font waktu */
     }
 
     .kartu {
@@ -68,22 +61,25 @@
         background-repeat: no-repeat;
         background-position: center;
         cursor: pointer;
-        transition: transform 0.3s ease-in-out;
+        transition: opacity 0.3s ease-in-out;
     }
 
-    .kartu:hover {
-        transform: scale(1.05);
+    .kartu.removed {
+        opacity: 0;
     }
 
     #kartuInduk {
-        background-color: #e0e0e0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 36px;
-        border: 2px dashed #aaa;
-        margin-top: 20px;
+        width: 215px;
+        height: 290px;
+        margin: 10px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: pointer;
     }
+
 
     #deckFisika,
     #deckKimia {
@@ -91,7 +87,6 @@
         justify-content: center;
         width: 100%;
         flex-wrap: wrap;
-        /* This allows the cards to wrap to the next line */
     }
 
     .row-container {
@@ -102,7 +97,6 @@
         margin-bottom: 20px;
     }
 
-    /* Adjust the width as needed based on the number of cards you want per row */
     .card-container {
         display: flex;
         justify-content: center;
@@ -112,12 +106,10 @@
 
     #deckFisika .card-container {
         margin-right: 10px;
-        /* Add a small margin to separate the fisika cards */
     }
 
     #deckKimia .card-container {
         margin-left: 10px;
-        /* Add a small margin to separate the kimia cards */
     }
 
     table {
@@ -130,6 +122,12 @@
         padding: 10px;
         text-align: center;
         vertical-align: middle;
+    }
+
+    .kartu-induk-bg {
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
     }
     </style>
 </head>
@@ -145,28 +143,34 @@
                 <strong>Waktu:</strong> <span id="waktu">120</span> detik
             </div>
         </div>
+        <div id="kartuInduk">
+        </div>
         <table>
-            <tr>
-                <div id="kartuIndukContainer">
-                </div>
+            <tr style="text-align: center; width: 900px;">
+                <td>
+                    <h2>Deck Fisika</h2>
+                </td>
+                <td>
+                    <h2>Deck Kimia</h2>
+                </td>
             </tr>
             <tr>
-                <td style="text-align: center;">
-                    <h2>Deck Fisika</h2>
+                <td style="text-align: center; height: 300px;">
                     <div id="deckFisika">
-                        <?php foreach ($soal as $row): ?>
-                        <div class="kartu fisika" data-id="<?= $row['id'] ?>"
-                            style="background-image: url('<?= base_url('assets/img/kartu/induk/').$row['fisika'];?>');">
+                        <?php foreach ($soal as $row1): ?>
+                        <div id="fisika" class="kartu fisika" data-id="<?= $row1['id'] ?>"
+                            style="background-image: url('<?= base_url('assets/img/kartu/induk/').$row1['fisika'];?>');"
+                            draggable="true" ondragstart="onDragStart(event)">
                         </div>
                         <?php endforeach; ?>
                     </div>
                 </td>
-                <td style="text-align: center;">
-                    <h2>Deck Kimia</h2>
+                <td style="text-align: center; height: 300px; ">
                     <div id="deckKimia">
-                        <?php foreach ($soal as $row): ?>
-                        <div class="kartu kimia" data-id="<?= $row['id'] ?>"
-                            style="background-image: url('<?= base_url('assets/img/kartu/induk/').$row['kimia'];?>');">
+                        <?php foreach ($soal as $row2): ?>
+                        <div id="kimia" class="kartu kimia" data-id="<?= $row2['id'] ?>"
+                            style="background-image: url('<?= base_url('assets/img/kartu/induk/').$row2['kimia'];?>');"
+                            draggable="true" ondragstart="onDragStart(event)">
                         </div>
                         <?php endforeach; ?>
                     </div>
@@ -176,27 +180,119 @@
     </div>
 
     <script>
-    // Logika permainan
-    // ...
+    const matchedCount = {};
+    let timeLeft = 120; 
+    const timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('waktu').textContent = timeLeft;
 
-    // Fungsi drag and drop
-    // ...
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            alert('Time is up!');
+            clearInterval(timer);
 
-    // Timer
-    // ...
+            const finalScore = document.getElementById('skor').innerText;
+            alert(`Game Over! Your final score is: ${finalScore}. Click OK to return to the homepage.`);
+
+            window.location.href = '<?= base_url('GameQuiz/'); ?>';
+
+        }
+    }, 1000);
+
+    //Making object draggable
+    document.querySelectorAll('.kartu').forEach(card => {
+        card.setAttribute('draggable', 'true');
+        card.addEventListener('dragstart', onDragStart);
+    });
+
+    document.getElementById('kartuInduk').addEventListener('drop', onDrop);
+    document.getElementById('kartuInduk').addEventListener('dragover', onDragOver);
+
+    function onDragOver(event) {
+        event.preventDefault();
+    }
+
+    function onDrop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("cardData");
+        console.log("Retrieved data:", data);
+
+        var parsedData = JSON.parse(data);
+        var draggedCard = document.getElementById(parsedData.draggedCardId);
+
+        var draggedCardDataId = draggedCard.getAttribute('data-id');
+        var dropTargetDataId = ev.target.getAttribute('data-id');
+
+        if (draggedCardDataId === dropTargetDataId) {
+            alert('Pilihan benar! Kamu mendapatkan 20 point.');
+            const currentScore = parseInt(document.getElementById('skor').innerText);
+            document.getElementById('skor').innerText = currentScore + 20;
+            draggedCard.classList.add('removed');
+            setTimeout(() => {
+                draggedCard.parentNode.removeChild(draggedCard);
+            }, 300); 
+            matchedCount[dropTargetDataId] = (matchedCount[dropTargetDataId] || 0) + 1;
+            if (matchedCount[dropTargetDataId] === 2) {
+                fetchKartuInduk();
+                matchedCount[dropTargetDataId] = 0;
+            }
+        } else {
+            console.log("Incorrect Match!");
+        }
+    }
+
+
+    function onDragStart(ev) {
+        var data = JSON.stringify({
+            draggedCardId: ev.target.id,
+            dataId: ev.target.getAttribute('data-id')
+        });
+        ev.dataTransfer.setData("cardData", data);
+        console.log("Dragged data set:", data); 
+    }
 
     //fetching kartuInduk
     document.addEventListener("DOMContentLoaded", function() {
-        // Fetch Kartu Induk data when the page loads
-        fetchKartuInduk();
+        fetchSoalCount();
     });
 
-    function fetchKartuInduk() {
-        fetch('your_backend_url_here/getKartuIndukData')
+    let lastDisplayedKartuIndukId = null; 
+
+    let fetchedKartuIndukIds = [];
+    let totalKartuIndukCount = 0;
+
+    function fetchSoalCount() {
+        fetch('<?= base_url('GameQuiz/getSoalCount'); ?>')
             .then(response => response.json())
             .then(data => {
-                // Once data is fetched, update the UI to display the Kartu Induk
-                displayKartuInduk(data);
+                totalKartuIndukCount = data.count;
+                console.log("Total Kartu Induk Count set to:", totalKartuIndukCount); 
+                fetchKartuInduk();
+            })
+            .catch(error => {
+                console.error('Error fetching soal count:', error);
+            });
+    }
+
+    function fetchKartuInduk() {
+        if (fetchedKartuIndukIds.length === totalKartuIndukCount) {
+            const finalScore = document.getElementById('skor').innerText;
+            alert(`Permainan Selesai! Skor final anda adalah: ${finalScore}. Click OK untuk kembali`);
+            window.location.href = '<?= base_url('GameQuiz/'); ?>';
+            return;
+        }
+        fetch('<?= base_url('GameQuiz/getKartuIndukData'); ?>')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * data.length);
+                } while (fetchedKartuIndukIds.includes(data[randomIndex].id));
+
+                fetchedKartuIndukIds.push(data[randomIndex].id);
+
+                displayKartuInduk(data[randomIndex]);
             })
             .catch(error => {
                 console.error('Error fetching Kartu Induk:', error);
@@ -204,18 +300,13 @@
     }
 
     function displayKartuInduk(kartuIndukData) {
-        // For simplicity, let's assume the data contains an image path and some description
-        const kartuIndukHtml = `
-        <div class="kartuIndukCard">
-            <img src="${kartuIndukData.imagePath}" alt="Kartu Induk">
-            <p>${kartuIndukData.description}</p>
-        </div>
-    `;
-        // Update the container with the Kartu Induk HTML
-        document.getElementById('kartuIndukContainer').innerHTML = kartuIndukHtml;
+        console.log("Displaying Kartu Induk with data:", kartuIndukData);
+        const kartuIndukElement = document.getElementById('kartuInduk');
+        const fullImageUrl = '<?= base_url('assets/img/kartu/induk/') ?>' + kartuIndukData.gambar;
+        kartuIndukElement.style.backgroundImage = `url('${fullImageUrl}')`;
+        kartuIndukElement.setAttribute('data-id', kartuIndukData.id);
     }
     </script>
-
 </body>
 
 </html>

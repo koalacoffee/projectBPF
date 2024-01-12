@@ -1,6 +1,6 @@
 /**
 * Template Name: NiceAdmin
-* Updated: Sep 18 2023 with Bootstrap v5.3.2
+* Updated: Nov 17 2023 with Bootstrap v5.3.2
 * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
 * Author: BootstrapMade.com
 * License: https://bootstrapmade.com/license/
@@ -103,14 +103,6 @@ h6 {
 /*--------------------------------------------------------------
 # Override some default Bootstrap stylings
 --------------------------------------------------------------*/
-
-.imgcard{
-  width:200px;
-  height:260px;
-  border: 2px solid #ccc; /* Add your desired border style */
-        border-radius: 8px;    /* Add border-radius for a rounded border */
-        margin-bottom: 10px;
-}
 /* Dropdown menus */
 .dropdown-menu {
   border-radius: 4px;
@@ -246,7 +238,6 @@ h6 {
   font-weight: 500;
   color: #012970;
   font-family: "Poppins", sans-serif;
-  margin-bottom: 0;
 }
 
 .card-title span {
@@ -369,18 +360,13 @@ h6 {
 
 @media (min-width: 1200px) {
   .logo {
-    width: 50px;
+    width: 280px;
   }
 }
 
 .logo img {
-  max-height: 100px;
+  max-height: 26px;
   margin-right: 6px;
-}
-
-.logoauth{
-  height:50px;
-  width: 50px;
 }
 
 .logo span {
@@ -972,10 +958,6 @@ h6 {
   max-width: 60px;
 }
 
-.card-thumb{
-  width:100px;
-  height:30px;
-}
 /*--------------------------------------------------------------
 # Icons list page
 --------------------------------------------------------------*/
@@ -985,10 +967,6 @@ h6 {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1.25rem;
   padding-top: 15px;
-}
-
-.vertical-line {
-  border-right: 1px solid #ccc; /* Or any color you prefer */
 }
 
 .iconslist .icon {

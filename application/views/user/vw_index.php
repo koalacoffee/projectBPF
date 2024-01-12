@@ -93,7 +93,7 @@
                                              <td><?= $us['nama']; ?></td>
                                              <td><?= $us['soal']; ?></td>
                                              <td><a class="btn btn-outline-primary btn-sm"
-                                                     href="<?=base_url('PlayQuiz/') . $us['id'];?>">Mainkan</a></td>
+                                                     href="<?=base_url('GameQuiz/playgame') ?>">Mainkan</a></td>
                                          </tr>
                                          <?php $i++; ?>
                                          <?php endforeach; ?>

@@ -53,4 +53,6 @@ $route['default_controller'] = 'Auth';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['Admin/soal/(:any)'] = 'Admin/soal/$1';
+$route['getKartuIndukData'] = 'GameQuiz/getKartuIndukData';
+
 

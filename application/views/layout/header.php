@@ -32,8 +32,6 @@
 
   <!-- Template Main CSS File -->
   <link href="<?= base_url('assets/') ?>css/style.css" rel="stylesheet">
-  <link href="<?= base_url('assets/') ?>css/custom.css" rel="stylesheet">
-  <script src="<?= base_url('assets/') ?>js/script.js" defer></script>
 
   <!-- Icon Lists -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
@@ -62,7 +60,7 @@
 
     <div class="d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo d-flex align-items-center">
-        <img src="<?= base_url('assets/') ?>img/logo_game.png" alt="">
+      <img src="<?= base_url('assets/') ;?>img/logo_game.png" alt="" width="40px" height="40px">
         <span class="d-none d-lg-block">Quiz Game</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
